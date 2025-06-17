@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyEdgeDrop.MainPage"
+             xmlns:local="clr-namespace:MyEdgeDrop.ViewModel"
+             x:DataType="local:MainPagesViewModel"
+             >
+
+    <ScrollView>
+        <Grid x:Name="MainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+
+
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="85" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="120" />
+
+            </Grid.ColumnDefinitions>
+
+            <Label x:Name="Title"
+                   Text="MyEdgeDrop!"
+                   FontSize="32"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.ColumnSpan="3"
+                   Margin="10" />
+
+            <Entry x:Name="SendEntry"
+                   Placeholder="输入要发送的内容"
+                   Text="{Binding Smes}"
+                   PlaceholderColor="LightSteelBlue"
+                   Grid.Column="0"
+                   Grid.Row="2"
+                   Grid.ColumnSpan="5"
+                />
+            
+            <Entry x:Name="GetEntry"
+                   Placeholder="接收的内容"
+                   ClearButtonVisibility="WhileEditing"
+                   IsReadOnly="True"
+                   Text="{Binding Gmes}"
+                   PlaceholderColor="LightSteelBlue"
+                   Grid.Column="0"
+                   Grid.Row="4"
+                   Grid.ColumnSpan="5"
+                />
+            
+            <Button x:Name="SelectFileButton"
+                    Text="选择文件"
+                    Grid.Column="0"
+                    Grid.Row="8"
+                    Command="{Binding PickAndShowCommand}"
+                    />
+            <Button x:Name="SendButton"
+                    Text="发送"
+                    Grid.Column="4"
+                    Grid.Row="6"
+                    Command="{Binding SendCommand}"
+                />
+            <Button x:Name="PullButton"
+                    Text="接收"
+                    Grid.Column="0"
+                    Grid.Row="6"
+                    Command="{Binding GetCommand}"
+                />
+
+            <Button x:Name="DeletButton"
+                    Text="移除所选文件"
+                    Grid.Column="4"
+                    Grid.Row="8"
+                    Command="{Binding DeleteFileCommand}"
+                    />
+            
+            <Button x:Name="SettingButton"
+                    Text="网络设置"
+                    Grid.Column="2"
+                    Grid.Row="6"
+                    Command="{Binding SettingCommand}"
+                    />
+            <CollectionView ItemsSource="{Binding Files}"
+                            Grid.Row="10"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type x:String}">
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Label  Text="{Binding}"
+                                    LineBreakMode="HeadTruncation"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ScrollView>
+</ContentPage>
