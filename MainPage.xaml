@@ -37,7 +37,7 @@
                    FontSize="32"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   Grid.ColumnSpan="3"
+                   Grid.ColumnSpan="4"
                    Margin="10" />
 
             <Entry x:Name="SendEntry"
@@ -129,6 +129,8 @@
                       Grid.Row="10"
                       Grid.Column="0"
                       Grid.ColumnSpan="5"
+                      SelectionMode="Single"
+                      ItemTapped="ListView_ItemTapped"
                       >
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type x:String}">
@@ -143,7 +145,8 @@
                                 <Label  Grid.Column="0"
                                         Grid.Row="0"
                                         Text="{Binding}"
-                                        FontAttributes="Bold" />
+                                        FontAttributes="Bold" 
+                                         />
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

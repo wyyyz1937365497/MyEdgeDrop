@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using static MyEdgeDrop.ViewModel.URL;
+using static MyEdgeDrop.ViewModel.MainPagesViewModel;
 
 namespace Drop.ViewModel.Web
 {
@@ -15,6 +17,7 @@ namespace Drop.ViewModel.Web
             {
                 try
                 {
+                    Debug.WriteLine("开始下载");
                     // 发起GET请求
                     using (HttpResponseMessage response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
                     {

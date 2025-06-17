@@ -16,12 +16,11 @@ namespace MyEdgeDrop.ViewModel
         private string? Name;
         private Dictionary<string, string> FileDic = new Dictionary<string, string>();
         public string[]? ResFList;
-        public IAsyncRelayCommand SendMesCommand;
-        public IAsyncRelayCommand GetMesCommand;
-        public IAsyncRelayCommand PickAndShowCommand;
-        public IAsyncRelayCommand SettingCommand;
-        public IAsyncRelayCommand SelectDownloadFileCommand;
-        public IAsyncRelayCommand DownLoadFile;
+        public IAsyncRelayCommand SendMesCommand { get; }
+        public IAsyncRelayCommand GetMesCommand { get; }
+        public IAsyncRelayCommand PickAndShowCommand { get; }
+        public IAsyncRelayCommand SettingCommand { get; }
+        public IAsyncRelayCommand SelectDownloadCommand { get; }
 
         public MainPagesViewModel()
         {
@@ -31,10 +30,8 @@ namespace MyEdgeDrop.ViewModel
             GetMesCommand = new AsyncRelayCommand(GetMes);
             PickAndShowCommand = new AsyncRelayCommand(PickAndShow);
             SettingCommand = new AsyncRelayCommand(Setting);
-            SelectDownloadFileCommand = new AsyncRelayCommand(SelectDownloadFile);
-
+            SelectDownloadCommand = new AsyncRelayCommand(SelectDownloadFile);
         }
-
         [ObservableProperty]
         string? gmes;
 
@@ -128,13 +125,6 @@ namespace MyEdgeDrop.ViewModel
             }
             ResFList = [];
         }
-        private async Task DownLoadFile(string file)
-        {
-            await Application.Current.MainPage.DisplayPromptAsync("将要下载的文件", "现为：" + file);
-            //DownloadFileFromApi(file);
-            //Filelists.Remove(file);
-        }
-
     }
 }
 

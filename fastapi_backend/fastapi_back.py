@@ -51,12 +51,15 @@ async def download_file(file_path: str):
                 yield chunk
     
     filename = os.path.basename(full_path)
+    # 使用 RFC 5987 编码文件名
+    encoded_filename = filename.encode('utf-8').hex()
+    content_disposition = f"attachment; filename*=utf-8''{encoded_filename}"
+    
     return StreamingResponse(
         iterfile(),
         media_type="application/octet-stream",
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
+        headers={"Content-Disposition": content_disposition}
     )
-
 @app.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
     # 构建完整的文件路径
