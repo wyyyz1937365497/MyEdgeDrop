@@ -1,126 +1,89 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using static Drop.ViewModel.Web.WebSocat;
 
 namespace MyEdgeDrop.ViewModel
 {
-
+    public static class URL
+    {
+        public static string ServerURL { get; set; } = "http://10.168.1.107:19255";
+    }
 
     public partial class MainPagesViewModel : ObservableObject
     {
-        private string FPath;
-        private string Name;
-        public Dictionary<string, string> FileDic = new Dictionary<string, string>();
-        static string ServerURL = "http://10.168.1.107:19255";
+        private string? FPath;
+        private string? Name;
+        private Dictionary<string, string> FileDic = new Dictionary<string, string>();
+        public string[]? ResFList;
+        public IAsyncRelayCommand SendMesCommand;
+        public IAsyncRelayCommand GetMesCommand;
+        public IAsyncRelayCommand PickAndShowCommand;
+        public IAsyncRelayCommand SettingCommand;
+        public IAsyncRelayCommand SelectDownloadFileCommand;
+        public IAsyncRelayCommand DownLoadFile;
+
         public MainPagesViewModel()
         {
             Files = [];
+            Filelists = [];
+            SendMesCommand = new AsyncRelayCommand(SendMes);
+            GetMesCommand = new AsyncRelayCommand(GetMes);
+            PickAndShowCommand = new AsyncRelayCommand(PickAndShow);
+            SettingCommand = new AsyncRelayCommand(Setting);
+            SelectDownloadFileCommand = new AsyncRelayCommand(SelectDownloadFile);
+
         }
 
         [ObservableProperty]
-        string gmes;
+        string? gmes;
 
         [ObservableProperty]
-        string smes;
+        string? smes;
 
         [ObservableProperty]
-        ObservableCollection<string> files;
+        ObservableCollection<string>? files;
 
-        static async Task<string?> GetMessage()
+        [ObservableProperty]
+        ObservableCollection<string>? filelists;
+
+        private async Task SendMes()
         {
-            // 创建HttpClient实例
-            using (HttpClient client = new HttpClient())
+            try
             {
-                try
+                await SendMessage(Smes);
+                Smes = string.Empty;
+                if (FileDic.Count != 0)
                 {
-                    // 发送GET请求
-                    HttpResponseMessage response = await client.GetAsync(ServerURL + "/get_message");
-
-                    // 确保请求成功
-                    response.EnsureSuccessStatusCode();
-
-                    // 读取响应内容
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    responseBody = responseBody.Trim('"');
-                    // 输出响应内容
-                    return responseBody;
-                }
-                catch (HttpRequestException e)
-                {
-                    // 处理请求异常
-                    Console.WriteLine("Exception Caught!");
-                    Console.WriteLine("Message :{0} ", e.Message);
-                    return null;
-                }
-            }
-        }
-
-        static async Task SendMessage(string messages)
-        {
-            if (messages == string.Empty)
-            {
-                return;
-            }
-            // 发送GET请求
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync(ServerURL + $"/upload_message?message={messages}");
-
-                // 检查响应状态码
-                if (response.IsSuccessStatusCode)
-                {
-                    // 打印响应内容
-                    _ = await response.Content.ReadAsStringAsync();
-                }
-            }
-        }
-
-        static async Task UploadFile(string filePath)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                using (MultipartFormDataContent content = new MultipartFormDataContent())
-                {
-                    FileStream fileStream = new FileStream(filePath, FileMode.Open); // Move outside using block
-                    content.Add(new StreamContent(fileStream), "file", Path.GetFileName(filePath));
-
-                    HttpResponseMessage response = await client.PostAsync(ServerURL + "/upload/", content);
-
-                    fileStream.Dispose(); // Dispose after PostAsync completes
-
-                    if (response.IsSuccessStatusCode)
+                    foreach (var fp in FileDic.Keys)
                     {
-                        string responseContent = await response.Content.ReadAsStringAsync();
+                        await UploadFile(FileDic[fp]);
+                        FileDic.Remove(fp);
+                        File.Delete(fp);
                     }
+                    DeleteFile();
                 }
+
             }
-        }
-
-
-        [RelayCommand]
-        async Task Send()
-        {
-            await SendMessage(Smes);
-            Smes = string.Empty;
-            if (FileDic.Count != 0)
+            catch
             {
-                foreach (var fp in FileDic.Keys)
-                {
-                    await UploadFile(FileDic[fp]);
-                    FileDic.Remove(fp);
-                    File.Delete(fp);
-                }
-                DeleteFile();
+                await Application.Current.MainPage.DisplayAlert("发送失败", "请检查后端是否正常运行！", "OK");
             }
         }
-        [RelayCommand]
-        async Task Get()
+
+        private async Task GetMes()
         {
-            Gmes = await GetMessage();
+            try
+            {
+                Gmes = await GetMessage();
+            }
+            catch
+            {
+                await Application.Current.MainPage.DisplayAlert("接收失败", "请检查后端是否正常运行！", "OK");
+            }
         }
 
-        [RelayCommand]
-        async Task<FileResult?> PickAndShow()
+        private async Task<FileResult?> PickAndShow()
         {
             try
             {
@@ -141,18 +104,37 @@ namespace MyEdgeDrop.ViewModel
 
             return null;
         }
+
         [RelayCommand]
         void DeleteFile()
         {
             FileDic.Clear();
             Files.Clear();
+            Filelists.Clear();
         }
 
-        [RelayCommand]
-        async Task Setting()
+        private async Task Setting()
         {
-            string result = await Application.Current.MainPage.DisplayPromptAsync("请输入服务器的IP+端口", "现为："+ ServerURL);
+            URL.ServerURL = await Application.Current.MainPage.DisplayPromptAsync("请输入服务器的IP+端口", "现为：" + URL.ServerURL);
         }
+        [RelayCommand]
+        private async Task SelectDownloadFile()
+        {
+            DeleteFile();
+            ResFList = await GetFileList();
+            foreach (string file in ResFList)
+            {
+                Filelists.Add(file);
+            }
+            ResFList = [];
+        }
+        private async Task DownLoadFile(string file)
+        {
+            await Application.Current.MainPage.DisplayPromptAsync("将要下载的文件", "现为：" + file);
+            //DownloadFileFromApi(file);
+            //Filelists.Remove(file);
+        }
+
     }
 }
 

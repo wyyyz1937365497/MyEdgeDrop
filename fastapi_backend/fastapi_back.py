@@ -1,5 +1,4 @@
 import uvicorn
-import chardet
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 import os
@@ -69,6 +68,11 @@ async def upload_file(file: UploadFile = File(...)):
             buffer.write(chunk)
     
     return {"message": "File uploaded successfully", "filename": file.filename}
+@app.get("/list_files")
+def list_files():
+    folder_path = "./uploads"  # 替换为你的文件夹路径
+    files = os.listdir(folder_path)
+    return files
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=19255)

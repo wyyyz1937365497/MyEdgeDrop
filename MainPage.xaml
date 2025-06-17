@@ -70,13 +70,13 @@
                     Text="发送"
                     Grid.Column="4"
                     Grid.Row="6"
-                    Command="{Binding SendCommand}"
+                    Command="{Binding SendMesCommand}"
                 />
             <Button x:Name="PullButton"
                     Text="接收"
                     Grid.Column="0"
                     Grid.Row="6"
-                    Command="{Binding GetCommand}"
+                    Command="{Binding GetMesCommand}"
                 />
 
             <Button x:Name="DeletButton"
@@ -85,36 +85,70 @@
                     Grid.Row="8"
                     Command="{Binding DeleteFileCommand}"
                     />
-            
+
             <Button x:Name="SettingButton"
                     Text="网络设置"
                     Grid.Column="2"
                     Grid.Row="6"
                     Command="{Binding SettingCommand}"
                     />
-            <CollectionView ItemsSource="{Binding Files}"
-                            Grid.Row="10"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="3"
-                            >
-                <CollectionView.ItemTemplate>
+            
+            <Button x:Name="ReciveFileButton"
+                    Text="下载指定文件"
+                    Grid.Column="2"
+                    Grid.Row="8"
+                    Command="{Binding SelectDownloadFileCommand}"
+                    />
+
+            <ListView ItemsSource="{Binding Files}"
+                      Grid.Row="10"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="5"
+                      >
+                <ListView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type x:String}">
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label  Text="{Binding}"
-                                    LineBreakMode="HeadTruncation"
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    />
-                        </Grid>
+                        <ViewCell>
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label  Grid.Column="0"
+                                        Grid.Row="0"
+                                        Text="{Binding}"
+                                        FontAttributes="Bold" />
+                            </Grid>
+                        </ViewCell>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView ItemsSource="{Binding Filelists}"
+                      Grid.Row="10"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="5"
+                      >
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type x:String}">
+                        <ViewCell>
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label  Grid.Column="0"
+                                        Grid.Row="0"
+                                        Text="{Binding}"
+                                        FontAttributes="Bold" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
     </ScrollView>
 </ContentPage>
